@@ -1,0 +1,627 @@
+// Roster.
+//
+// 🚨 Every colour is a Flarum variable, never a literal. This has to sit inside
+// whatever theme the site runs — Bespoke, a custom one, or core's default — and
+// a hardcoded grey is the thing that looks wrong on somebody else's dark mode.
+.RosterPage {
+  padding: 24px 0 48px;
+
+  &-head { margin-bottom: 24px; }
+  &-intro { color: var(--muted-color); margin: 4px 0 0; }
+  &-empty { color: var(--muted-color); }
+
+  // The league switcher wraps rather than scrolls: the list is short, and a
+  // horizontal scroller for six buttons hides half of them on a phone.
+  &-leagues {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+}
+
+.RosterConference {
+  margin-top: 32px;
+
+  h2 {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 18px;
+    margin: 0 0 12px;
+  }
+}
+
+.RosterConference-count {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted-color);
+}
+
+.RosterGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.RosterCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--border-radius, 8px);
+  background: var(--body-bg);
+  border: 1px solid var(--control-bg);
+  color: var(--text-color);
+
+  // 🚨 No underline on hover anywhere here. These are mostly crest tiles and
+  // table rows, and an underline on a card reads as a broken link.
+  &:hover { text-decoration: none; border-color: var(--primary-color); }
+
+  &-crest { width: 34px; height: 34px; object-fit: contain; flex: 0 0 34px; }
+  &-crest--none { background: var(--control-bg); border-radius: 50%; }
+  &-name { display: flex; flex-direction: column; font-weight: 600; line-height: 1.25; }
+  &-mascot { font-weight: 400; font-size: 12px; color: var(--muted-color); }
+}
+
+.RosterTeam-back { display: inline-block; margin-bottom: 12px; font-size: 13px; }
+
+.RosterTeam-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px;
+  border-radius: var(--border-radius, 8px);
+  background: var(--body-bg);
+  border: 1px solid var(--control-bg);
+
+  h1 { margin: 0; font-size: 26px; }
+  h1 small { font-weight: 400; font-size: 15px; color: var(--muted-color); }
+}
+
+.RosterTeam-crest { width: 64px; height: 64px; object-fit: contain; }
+.RosterTeam-conference { margin: 4px 0 0; color: var(--muted-color); }
+
+.RosterGroup {
+  margin-top: 28px;
+
+  h3 { font-size: 16px; margin: 0 0 8px; }
+}
+
+// 🚨 The table scrolls inside its own container. A roster is seven columns and
+// the page body must never scroll sideways on a phone.
+.RosterTable-scroll { overflow-x: auto; }
+
+.RosterTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  th {
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted-color);
+    padding: 6px 10px;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 8px 10px;
+    border-top: 1px solid var(--control-bg);
+    white-space: nowrap;
+  }
+
+  &-num { color: var(--muted-color); font-variant-numeric: tabular-nums; }
+  &-name { font-weight: 600; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   The crest wall.
+
+   🚨 Every club in the competition, moving slowly, at full strength. A wall of
+   marks is the one thing that says "all of college football" faster than any
+   sentence — and the crests are the site's biggest visual asset, so they are
+   drawn at full opacity rather than ghosted into a background.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.RosterCrests {
+  position: relative;
+  padding: 26px 0 18px;
+  overflow: hidden;
+}
+
+.RosterCrests-wall {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  /*
+   * 🚨 Faded at both edges with a mask rather than a gradient overlay. An
+   * overlay would need to know the page's background colour, which changes
+   * with the theme; a mask makes the crests themselves transparent and works
+   * on any ground.
+   */
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.RosterCrests-row {
+  display: flex;
+  overflow: hidden;
+}
+
+.RosterCrests-track {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  padding-right: 34px;
+  // 🚨 Half the width, because the list is rendered twice — see the component.
+  animation: roster-crest-scroll 90s linear infinite;
+  will-change: transform;
+}
+
+.RosterCrests-row--reverse .RosterCrests-track {
+  animation-direction: reverse;
+}
+
+@keyframes roster-crest-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Held still while somebody is reading it or reaching for a crest. */
+.RosterCrests:hover .RosterCrests-track,
+.RosterCrests:focus-within .RosterCrests-track {
+  animation-play-state: paused;
+}
+
+.RosterCrests-crest {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 66px;
+  height: 66px;
+  /*
+   * 🚨 Full colour, and nearly full strength.
+   *
+   * The first version desaturated the whole wall so a hundred and thirty-eight
+   * clashing palettes would read as one texture. It read as grey — and the
+   * colour IS the point: a wall of real crests is the fastest thing on the page
+   * at saying "all of college football". The hover still lifts one out.
+   */
+  opacity: .88;
+  transition: opacity .16s ease, transform .16s ease;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+    transform: scale(1.22);
+  }
+}
+
+.RosterCrests-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+// One ground at a time; see the component for why both travel.
+.RosterCrests-img--dark { display: none; }
+
+html[data-theme='dark'] .RosterCrests {
+  .RosterCrests-img--light { display: none; }
+  .RosterCrests-img--dark { display: block; }
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme='light']) .RosterCrests {
+    .RosterCrests-img--light { display: none; }
+    .RosterCrests-img--dark { display: block; }
+  }
+}
+
+.RosterCrests-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+  text-align: center;
+}
+
+.RosterCrests-captionText {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.RosterCrests-counts {
+  font-size: .88rem;
+  color: var(--muted-color);
+  font-variant-numeric: tabular-nums;
+
+  b {
+    color: var(--primary-color);
+    font-weight: 800;
+  }
+}
+
+.RosterCrests-dot { margin: 0 8px; opacity: .5; }
+
+/*
+ * 🚨 Still, for a reader who has asked the machine to stop moving things. Not
+ * slower — stopped, and laid out as a wrap so the whole wall is still there to
+ * look at rather than a single frozen row.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .RosterCrests-track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 22px;
+  }
+
+  .RosterCrests-row { overflow: visible; }
+
+  // The duplicate copy is decoration; without motion it is just repetition.
+  .RosterCrests-track > *:nth-child(2) { display: none; }
+}
+
+@media (max-width: 767px) {
+  .RosterCrests-crest { width: 44px; height: 44px; }
+  .RosterCrests-track { gap: 22px; padding-right: 22px; }
+}
+
+// ── A player's page ─────────────────────────────────────────────────────────
+// The club's colour carries the hero (`--roster-team`, from the team row); a
+// club with none falls back to the theme's primary colour.
+
+.RosterTable-name a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    color: var(--primary-color);
+    text-decoration: underline;
+  }
+}
+
+.RosterPlayer-hero {
+  margin-top: 10px;
+  padding: 26px 0;
+  color: #fff;
+  background: var(--roster-team, var(--primary-color));
+  // A darker band under the text so a pale club colour still carries white.
+  background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.05));
+}
+
+.RosterPlayer-heroInner {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.RosterPlayer-photo {
+  flex: 0 0 auto;
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+}
+
+.RosterPlayer-initials {
+  align-self: center;
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #555;
+}
+
+.RosterPlayer-identity {
+  min-width: 0;
+
+  h1 {
+    margin: 4px 0 2px;
+    font-size: 2rem;
+    line-height: 1.15;
+    color: #fff;
+  }
+}
+
+// 🚨 Four classes and an element. Bespoke colours every light-mode link with
+// `:root:not([data-theme^="dark"]) a:not(.Button)` — three classes and an
+// element, and later in the sheet — which painted the club's name in brand red
+// on the club's own colour. Three classes tied and lost; four wins in any order
+// without reaching for !important.
+.RosterPage .RosterPlayer-hero .RosterPlayer-identity a.RosterPlayer-team,
+.RosterPage .RosterPlayer-hero .RosterPlayer-identity a.RosterPlayer-team:hover,
+.RosterPage .RosterPlayer-hero .RosterPlayer-identity a.RosterPlayer-team:focus {
+  color: #fff;
+}
+
+.RosterPlayer-team {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+  text-decoration: none;
+
+  img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 50%;
+    padding: 2px;
+  }
+
+  &:hover,
+  &:focus {
+    color: #fff;
+    text-decoration: underline;
+  }
+}
+
+.RosterPlayer-line {
+  margin: 0;
+  font-size: 1.05rem;
+  opacity: 0.9;
+}
+
+.RosterPlayer-body {
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+
+.RosterPlayer-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 0 0 18px;
+
+  dt {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted-color);
+  }
+
+  dd {
+    margin: 2px 0 0;
+    font-weight: 600;
+  }
+}
+
+
+.RosterPlayer-next {
+  margin: 0 0 20px;
+}
+
+.RosterPlayer-section {
+  margin: 28px 0 0;
+
+  h2 {
+    margin: 0 0 12px;
+    font-size: 1.25rem;
+  }
+}
+
+.RosterPlayer-about p {
+  max-width: 75ch;
+  line-height: 1.6;
+}
+
+.RosterPlayer-credit,
+.RosterPlayer-source {
+  font-size: 0.85rem;
+}
+
+.RosterPlayer-videos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.RosterVideo {
+  margin: 0;
+
+  figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 6px;
+    font-size: 0.9rem;
+  }
+}
+
+.RosterVideo-poster,
+.RosterVideo-frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+}
+
+.RosterVideo-poster {
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover img,
+  &:focus-visible img {
+    transform: scale(1.03);
+  }
+}
+
+.RosterVideo-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 54px;
+  height: 54px;
+  margin: -27px 0 0 -27px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 20px;
+  line-height: 54px;
+  text-align: center;
+  padding-left: 4px;
+}
+
+.RosterVideo-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.RosterVideo-title {
+  font-weight: 600;
+}
+
+.RosterVideo-link {
+  font-size: 0.8rem;
+}
+
+.RosterTable--stats {
+  th[scope="row"] {
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  td {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  abbr {
+    text-decoration: none;
+    cursor: help;
+  }
+}
+
+.RosterGame {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+}
+
+.RosterGame-result {
+  margin-left: 4px;
+  font-weight: 600;
+  color: var(--muted-color);
+
+  &--w {
+    color: #1f8a3e;
+  }
+
+  &--l {
+    color: #c0392b;
+  }
+}
+
+.RosterPlayer-news {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+
+  a {
+    display: flex;
+    gap: 12px;
+    color: inherit;
+    text-decoration: none;
+
+    &:hover strong,
+    &:focus strong {
+      text-decoration: underline;
+    }
+  }
+
+  img {
+    flex: 0 0 120px;
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+
+  span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  small {
+    color: var(--muted-color);
+  }
+}
+
+.RosterPlayer-newsText {
+  color: var(--muted-color);
+  font-size: 0.9rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// 767.98px, not 767px: Flarum's own phone layout switches at the fraction.
+@media (max-width: 767.98px) {
+  .RosterPlayer-heroInner {
+    gap: 14px;
+  }
+
+  .RosterPlayer-photo {
+    width: 86px;
+    height: 86px;
+  }
+
+  .RosterPlayer-identity h1 {
+    font-size: 1.5rem;
+  }
+
+  .RosterPlayer-news img {
+    flex-basis: 88px;
+    width: 88px;
+    height: 50px;
+  }
+}
