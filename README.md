@@ -2,18 +2,13 @@
 
 > **Read-only archive of released versions of ernestdefoe/roster.** Not for installation: use [Packagist](https://packagist.org/packages/ernestdefoe/roster) or the [upstream repository](https://github.com/ernestdefoe/roster).
 
-**6** versions archived · Latest: [`1.2.3`](https://github.com/flarchive/ernestdefoe-roster/tree/archive/v1.2.3) · License: `MIT` · Flarum: `^2.0`
+**0** versions archived · Latest: [`1.2.4`](https://github.com/flarchive/ernestdefoe-roster/tree/archive/v1.2.4) · License: `MIT` · Flarum: `^2.0`
 
 ## Archived Versions
 
 | Version | Released | Flarum | Source |
 |---|---|---|---|
-| `1.0.0` | 2026-09-09 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-roster/tree/archive/v1.0.0) |
-| `1.1.0` | 2026-10-01 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-roster/tree/archive/v1.1.0) |
-| `1.2.0` | 2026-10-03 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-roster/tree/archive/v1.2.0) |
-| `1.2.1` | 2026-10-03 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-roster/tree/archive/v1.2.1) |
-| `1.2.2` | 2026-10-05 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-roster/tree/archive/v1.2.2) |
-| `1.2.3` | 2026-10-05 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-roster/tree/archive/v1.2.3) |
+| — | — | — | — |
 
 Catalog entry: [packages/ernestdefoe-roster.json](https://github.com/flarchive/archive-index/blob/main/packages/ernestdefoe-roster.json)
 
